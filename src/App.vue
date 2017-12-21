@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <p v-for="entry in JsonData.feed.entries" :key="entry.title">
-      {{entry}}
-    </p>
   </div>
 </template>
 
@@ -14,23 +11,16 @@ export default {
     return {
       proxyURL: 'https://cors-anywhere.herokuapp.com/',
       feedURL: `https://movement.com/blog/feed/`,
-      JsonData: {}
+      jsonData: {},
+      latestPost: {},
+      posts: {}
     }
   },
   methods:{
     getrss(){
-      parser.parseURL(this.proxyURL+this.feedURL, (err,parsed) => {
-        if(err){
-          alert('blog url is down')
-        }
-        else{
-          this.JsonData = parsed
-        }
-      })
     }
   },
   created() {
-    this.getrss();
   }
 }
 </script>
