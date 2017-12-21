@@ -1,26 +1,41 @@
 <template>
   <div id="app">
+    <p v-for="post in jsonData.data" :key="post.id">
+      {{post.title.rendered}}
+
+      </br>
+      {{post.content.rendered.replace(/<\/?[^>]+>/gi, '') }}
+    </p>
   </div>
 </template>
 
 <script>
-import parser from 'rss-parser'
+import axios from 'axios'
 export default {
   name: 'app',
   data () {
     return {
-      proxyURL: 'https://cors-anywhere.herokuapp.com/',
-      feedURL: `https://movement.com/blog/feed/`,
+      feedURL: `https://movement.com/blog/wp-json/wp/v2/posts/`,
       jsonData: {},
       latestPost: {},
       posts: {}
     }
   },
   methods:{
-    getrss(){
+    getData(){
+      axios.get(this.feedURL)
+        .then((response) => {
+          this.jsonData = response
+          this.latestPost = this.jsonData
+          
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   created() {
+    this.getData()
   }
 }
 </script>
