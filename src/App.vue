@@ -1,8 +1,11 @@
 <template>
   <div id="app">
-    <p v-for="post in jsonData.data" :key="post.id">
+    <h4>{{postID}}</h4>
+    <h4>{{latestPost.title.rendered}}</h4>
+    <h4>{{latestPost.content.rendered.replace(/<\/?[^>]+>/gi, '')}}</h4>
+    <p class="post" v-for="post in jsonData" :key="post.id">
+      {{post.id}}
       {{post.title.rendered}}
-
       </br>
       {{post.content.rendered.replace(/<\/?[^>]+>/gi, '') }}
     </p>
@@ -15,27 +18,32 @@ export default {
   name: 'app',
   data () {
     return {
-      feedURL: `https://movement.com/blog/wp-json/wp/v2/posts/`,
-      jsonData: {},
+      feedURL: 'https://movement.com/blog/wp-json/wp/v2/posts/',
+      mediaURL: 'https://movement.com/blog/wp-json/wp/v2/media/',
+      jsonData: [],
       latestPost: {},
-      posts: {}
+      postID: null,
     }
   },
   methods:{
     getData(){
       axios.get(this.feedURL)
         .then((response) => {
-          this.jsonData = response
-          this.latestPost = this.jsonData
-          
+          this.jsonData = response.data
+          this.latestPost = this.jsonData[0]
+          this.jsonData.shift()
+          for(let i = 0; i < this.jsonData.length; i++){
+            this.postID = this.jsonData[i].id
+          }
         })
         .catch((error) => {
           console.log(error)
         })
-    }
+    },
   },
   created() {
-    this.getData()
+    this.getData(),
+    this.test()
   }
 }
 </script>
@@ -49,7 +57,6 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-
 h1, h2 {
   font-weight: normal;
 }
